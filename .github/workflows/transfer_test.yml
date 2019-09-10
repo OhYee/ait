@@ -1,0 +1,15 @@
+name: transfer_test
+on: [push]
+jobs:
+
+  build:
+    name: transfer_test
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Set up Go
+      uses: actions/setup-go@v1
+      id: go
+
+    - name: Test
+      run: go test ./rpc/transfer -v

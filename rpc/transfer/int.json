@@ -1,0 +1,27 @@
+{
+    "package": "transfer",
+    "import": [],
+    "body": [
+        {
+            "template": "int.tpl",
+            "args": [
+                {
+                    "type": "int8",
+                    "length": "1"
+                },
+                {
+                    "type": "int16",
+                    "length": "2"
+                },
+                {
+                    "type": "int32",
+                    "length": "4"
+                },
+                {
+                    "type": "int64",
+                    "length": "8"
+                }
+            ]
+        }
+    ]
+}

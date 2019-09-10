@@ -1,0 +1,23 @@
+{
+    "package": "transfer",
+    "import": [
+        "fmt"
+    ],
+    "body": [
+        {
+            "template": "from.tpl",
+            "args": [
+                [
+                    "uint8",
+                    "uint16",
+                    "uint32",
+                    "uint64",
+                    "int8",
+                    "int16",
+                    "int32",
+                    "int64"
+                ]
+            ]
+        }
+    ]
+}
