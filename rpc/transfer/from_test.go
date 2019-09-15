@@ -89,6 +89,12 @@ var testcases = []testCase{
 }
 
 func TestTranasferFrom(t *testing.T) {
+	t.Run("unknown type", func(t *testing.T) {
+		b, _ := fromValue(testCase{})
+		if !bytes.Equal(b, []byte{}) {
+			t.Errorf("Except %v, got %v", []byte{}, b)
+		}
+	})
 	for _, testcase := range testcases {
 		t.Run(testcase.name, func(t *testing.T) {
 			b, _ := fromValue(testcase.v)
