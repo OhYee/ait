@@ -6,6 +6,7 @@ import (
 
 //go:generate gcg int.json int.go
 //go:generate gcg from.json from.go
+//go:generate gcg to.json to.go
 
 type any = interface{}
 

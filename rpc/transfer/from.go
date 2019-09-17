@@ -6,7 +6,8 @@ import (
 	"fmt"
 )
 
-func fromValue(value any) (b []byte, err error) {
+// FromValue from a build-in type value to bytes
+func FromValue(value any) (b []byte, err error) {
 	switch value.(type) {
 
 	case uint8:
@@ -42,7 +43,7 @@ func fromValue(value any) (b []byte, err error) {
 		b, err = FromInt64(v)
 
 	default:
-		err = fmt.Errorf("Can not solve the unknown type: %T", value)
+		err = fmt.Errorf("Transfer Error: Can not solve the unknown type: %T", value)
 	}
 	return
 }

@@ -104,7 +104,7 @@
 
     func toU{{.type}}(r io.Reader) (value u{{.type}}, err error) {
         var data []byte
-        data, err = goutil.ReadNBytes(r, 1)
+        data, err = goutil.ReadNBytes(r, {{.length}})
         if err != nil {
             return
         }

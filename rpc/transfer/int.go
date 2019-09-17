@@ -113,7 +113,7 @@ func ToUint16(r io.Reader) (value uint16, err error) {
 
 func toUint16(r io.Reader) (value uint16, err error) {
 	var data []byte
-	data, err = goutil.ReadNBytes(r, 1)
+	data, err = goutil.ReadNBytes(r, 2)
 	if err != nil {
 		return
 	}
@@ -172,7 +172,7 @@ func ToUint32(r io.Reader) (value uint32, err error) {
 
 func toUint32(r io.Reader) (value uint32, err error) {
 	var data []byte
-	data, err = goutil.ReadNBytes(r, 1)
+	data, err = goutil.ReadNBytes(r, 4)
 	if err != nil {
 		return
 	}
@@ -231,7 +231,7 @@ func ToUint64(r io.Reader) (value uint64, err error) {
 
 func toUint64(r io.Reader) (value uint64, err error) {
 	var data []byte
-	data, err = goutil.ReadNBytes(r, 1)
+	data, err = goutil.ReadNBytes(r, 8)
 	if err != nil {
 		return
 	}

@@ -1,4 +1,5 @@
-func fromValue(value any) (b []byte, err error) {
+// FromValue from a build-in type value to bytes
+func FromValue(value any) (b []byte, err error) {
 	switch value.(type) {
 
     {{range $type := .}}
@@ -6,7 +7,7 @@ func fromValue(value any) (b []byte, err error) {
     {{end}}
 
 	default:
-		err = fmt.Errorf("Can not solve the unknown type: %T", value)
+		err = fmt.Errorf("Transfer Error: Can not solve the unknown type: %T", value)
 	}
 	return
 }
