@@ -2,30 +2,97 @@
 
 package transfer
 
-import ()
+import (
+	"fmt"
+	"github.com/OhYee/goutil"
+	"io"
+)
 
-// fromInt8 transfer from `int8` to `[]byte`
-func fromInt8(value int8) (b []byte, err error) {
+// FromInt8 transfer from `int8` to `[]byte`
+func FromInt8(value int8) (b []byte, err error) {
 	b = []byte{TypeInt8, uint8(value)}
 	return
 }
 
-// fromUint8 transfer from `uint8` to `[]byte`
-func fromUint8(value uint8) (b []byte, err error) {
+// ToInt8 transfer from `[]byte` to `int8`
+func ToInt8(r io.Reader) (value int8, err error) {
+	var t []byte
+	t, err = goutil.ReadNBytes(r, 1)
+	if t[0] != TypeInt8 {
+		err = fmt.Errorf("Transfer error: want %d(%T), got %d", TypeInt8, value, t[0])
+	}
+	value, err = toInt8(r)
+	return
+}
+
+func toInt8(r io.Reader) (value int8, err error) {
+	var data []byte
+	data, err = goutil.ReadNBytes(r, 1)
+	if err != nil {
+		return
+	}
+	value = int8(data[0])
+	return
+}
+
+// FromUint8 transfer from `uint8` to `[]byte`
+func FromUint8(value uint8) (b []byte, err error) {
 	b = []byte{TypeUint8, value}
 	return
 }
 
-// fromInt16 transfer from `int16` to `[]byte`
-func fromInt16(value int16) (b []byte, err error) {
+// ToUint8 transfer from `[]byte` to `uint8`
+func ToUint8(r io.Reader) (value uint8, err error) {
+	var t []byte
+	t, err = goutil.ReadNBytes(r, 1)
+	if t[0] != TypeUint8 {
+		err = fmt.Errorf("Transfer error: want %d(%T), got %d", TypeUint8, value, t[0])
+	}
+	value, err = toUint8(r)
+	return
+}
+
+func toUint8(r io.Reader) (value uint8, err error) {
+	var data []byte
+	data, err = goutil.ReadNBytes(r, 1)
+	if err != nil {
+		return
+	}
+	value = uint8(data[0])
+	return
+}
+
+// FromInt16 transfer from `int16` to `[]byte`
+func FromInt16(value int16) (b []byte, err error) {
 	b = make([]byte, 2)
 	byteOrder.PutUint16(b, uint16(value))
 	b = append([]byte{TypeInt16}, b...)
 	return
 }
 
-// fromUint16 transfer from `uint16` to `[]byte`
-func fromUint16(value uint16) (b []byte, err error) {
+// ToInt16 transfer from `[]byte` to `int16`
+func ToInt16(r io.Reader) (value int16, err error) {
+	var t []byte
+	t, err = goutil.ReadNBytes(r, 1)
+	if t[0] != TypeInt16 {
+		err = fmt.Errorf("Transfer error: want %d(%T), got %d", TypeInt16, value, t[0])
+	}
+	value, err = toInt16(r)
+	return
+}
+
+func toInt16(r io.Reader) (value int16, err error) {
+	var data []byte
+	data, err = goutil.ReadNBytes(r, 2)
+	if err != nil {
+		return
+	}
+	value = int16(byteOrder.Uint16(data))
+	return
+}
+
+// FromUint16 transfer from `uint16` to `[]byte`
+func FromUint16(value uint16) (b []byte, err error) {
 	b = make([]byte, 2)
 	byteOrder.PutUint16(b, value)
 	b = append([]byte{TypeUint16}, b...)
@@ -33,16 +100,58 @@ func fromUint16(value uint16) (b []byte, err error) {
 	return
 }
 
-// fromInt32 transfer from `int32` to `[]byte`
-func fromInt32(value int32) (b []byte, err error) {
+// ToUint16 transfer from `[]byte` to `uint16`
+func ToUint16(r io.Reader) (value uint16, err error) {
+	var t []byte
+	t, err = goutil.ReadNBytes(r, 1)
+	if t[0] != TypeUint16 {
+		err = fmt.Errorf("Transfer error: want %d(%T), got %d", TypeUint16, value, t[0])
+	}
+	value, err = toUint16(r)
+	return
+}
+
+func toUint16(r io.Reader) (value uint16, err error) {
+	var data []byte
+	data, err = goutil.ReadNBytes(r, 1)
+	if err != nil {
+		return
+	}
+	value = byteOrder.Uint16(data)
+	return
+}
+
+// FromInt32 transfer from `int32` to `[]byte`
+func FromInt32(value int32) (b []byte, err error) {
 	b = make([]byte, 4)
 	byteOrder.PutUint32(b, uint32(value))
 	b = append([]byte{TypeInt32}, b...)
 	return
 }
 
-// fromUint32 transfer from `uint32` to `[]byte`
-func fromUint32(value uint32) (b []byte, err error) {
+// ToInt32 transfer from `[]byte` to `int32`
+func ToInt32(r io.Reader) (value int32, err error) {
+	var t []byte
+	t, err = goutil.ReadNBytes(r, 1)
+	if t[0] != TypeInt32 {
+		err = fmt.Errorf("Transfer error: want %d(%T), got %d", TypeInt32, value, t[0])
+	}
+	value, err = toInt32(r)
+	return
+}
+
+func toInt32(r io.Reader) (value int32, err error) {
+	var data []byte
+	data, err = goutil.ReadNBytes(r, 4)
+	if err != nil {
+		return
+	}
+	value = int32(byteOrder.Uint32(data))
+	return
+}
+
+// FromUint32 transfer from `uint32` to `[]byte`
+func FromUint32(value uint32) (b []byte, err error) {
 	b = make([]byte, 4)
 	byteOrder.PutUint32(b, value)
 	b = append([]byte{TypeUint32}, b...)
@@ -50,19 +159,82 @@ func fromUint32(value uint32) (b []byte, err error) {
 	return
 }
 
-// fromInt64 transfer from `int64` to `[]byte`
-func fromInt64(value int64) (b []byte, err error) {
+// ToUint32 transfer from `[]byte` to `uint32`
+func ToUint32(r io.Reader) (value uint32, err error) {
+	var t []byte
+	t, err = goutil.ReadNBytes(r, 1)
+	if t[0] != TypeUint32 {
+		err = fmt.Errorf("Transfer error: want %d(%T), got %d", TypeUint32, value, t[0])
+	}
+	value, err = toUint32(r)
+	return
+}
+
+func toUint32(r io.Reader) (value uint32, err error) {
+	var data []byte
+	data, err = goutil.ReadNBytes(r, 1)
+	if err != nil {
+		return
+	}
+	value = byteOrder.Uint32(data)
+	return
+}
+
+// FromInt64 transfer from `int64` to `[]byte`
+func FromInt64(value int64) (b []byte, err error) {
 	b = make([]byte, 8)
 	byteOrder.PutUint64(b, uint64(value))
 	b = append([]byte{TypeInt64}, b...)
 	return
 }
 
-// fromUint64 transfer from `uint64` to `[]byte`
-func fromUint64(value uint64) (b []byte, err error) {
+// ToInt64 transfer from `[]byte` to `int64`
+func ToInt64(r io.Reader) (value int64, err error) {
+	var t []byte
+	t, err = goutil.ReadNBytes(r, 1)
+	if t[0] != TypeInt64 {
+		err = fmt.Errorf("Transfer error: want %d(%T), got %d", TypeInt64, value, t[0])
+	}
+	value, err = toInt64(r)
+	return
+}
+
+func toInt64(r io.Reader) (value int64, err error) {
+	var data []byte
+	data, err = goutil.ReadNBytes(r, 8)
+	if err != nil {
+		return
+	}
+	value = int64(byteOrder.Uint64(data))
+	return
+}
+
+// FromUint64 transfer from `uint64` to `[]byte`
+func FromUint64(value uint64) (b []byte, err error) {
 	b = make([]byte, 8)
 	byteOrder.PutUint64(b, value)
 	b = append([]byte{TypeUint64}, b...)
 
+	return
+}
+
+// ToUint64 transfer from `[]byte` to `uint64`
+func ToUint64(r io.Reader) (value uint64, err error) {
+	var t []byte
+	t, err = goutil.ReadNBytes(r, 1)
+	if t[0] != TypeUint64 {
+		err = fmt.Errorf("Transfer error: want %d(%T), got %d", TypeUint64, value, t[0])
+	}
+	value, err = toUint64(r)
+	return
+}
+
+func toUint64(r io.Reader) (value uint64, err error) {
+	var data []byte
+	data, err = goutil.ReadNBytes(r, 1)
+	if err != nil {
+		return
+	}
+	value = byteOrder.Uint64(data)
 	return
 }

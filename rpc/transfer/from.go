@@ -11,35 +11,35 @@ func fromValue(value any) (b []byte, err error) {
 
 	case uint8:
 		v, _ := value.(uint8)
-		b, err = fromUint8(v)
+		b, err = FromUint8(v)
 
 	case uint16:
 		v, _ := value.(uint16)
-		b, err = fromUint16(v)
+		b, err = FromUint16(v)
 
 	case uint32:
 		v, _ := value.(uint32)
-		b, err = fromUint32(v)
+		b, err = FromUint32(v)
 
 	case uint64:
 		v, _ := value.(uint64)
-		b, err = fromUint64(v)
+		b, err = FromUint64(v)
 
 	case int8:
 		v, _ := value.(int8)
-		b, err = fromInt8(v)
+		b, err = FromInt8(v)
 
 	case int16:
 		v, _ := value.(int16)
-		b, err = fromInt16(v)
+		b, err = FromInt16(v)
 
 	case int32:
 		v, _ := value.(int32)
-		b, err = fromInt32(v)
+		b, err = FromInt32(v)
 
 	case int64:
 		v, _ := value.(int64)
-		b, err = fromInt64(v)
+		b, err = FromInt64(v)
 
 	default:
 		err = fmt.Errorf("Can not solve the unknown type: %T", value)

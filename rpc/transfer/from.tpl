@@ -13,5 +13,5 @@ func fromValue(value any) (b []byte, err error) {
 {{define "case"}}
 case {{.}}:
 		v, _ := value.({{.}})
-		b, err = from{{upperFirstChar .}}(v)
+		b, err = From{{upperFirstChar .}}(v)
 {{end}}

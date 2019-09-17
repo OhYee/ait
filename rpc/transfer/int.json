@@ -1,6 +1,10 @@
 {
     "package": "transfer",
-    "import": [],
+    "import": [
+        "github.com/OhYee/goutil",
+        "fmt",
+        "io"
+    ],
     "body": [
         {
             "template": "int.tpl",
