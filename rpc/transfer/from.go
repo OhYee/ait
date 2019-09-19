@@ -42,6 +42,14 @@ func FromValue(value any) (b []byte, err error) {
 		v, _ := value.(int64)
 		b, err = FromInt64(v)
 
+	case string:
+		v, _ := value.(string)
+		b, err = FromString(v)
+
+	case []byte:
+		v, _ := value.([]byte)
+		b, err = FromBytes(v)
+
 	default:
 		err = fmt.Errorf("Transfer Error: Can not solve the unknown type: %T", value)
 	}

@@ -38,6 +38,12 @@ func ToValue(r io.Reader) (value goutil.Any, err error) {
 	case TypeInt64:
 		value, err = toInt64(r)
 
+	case TypeString:
+		value, err = toString(r)
+
+	case TypeBytes:
+		value, err = toBytes(r)
+
 	default:
 		err = fmt.Errorf("Transfer Error: Can not identify type %d", t[0])
 	}

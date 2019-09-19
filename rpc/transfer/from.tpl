@@ -3,7 +3,11 @@ func FromValue(value any) (b []byte, err error) {
 	switch value.(type) {
 
     {{range $type := .}}
-    {{template "case" $type}}
+        {{if isString $type}}
+            {{template "case" makeMap "type" $type "name" $type}}
+        {{else}}
+            {{template "case" $type}}
+        {{end}}
     {{end}}
 
 	default:
@@ -11,8 +15,9 @@ func FromValue(value any) (b []byte, err error) {
 	}
 	return
 }
+
 {{define "case"}}
-case {{.}}:
-		v, _ := value.({{.}})
-		b, err = From{{upperFirstChar .}}(v)
+case {{.type}}:
+		v, _ := value.({{.type}})
+		b, err = From{{upperFirstChar .name}}(v)
 {{end}}
