@@ -44,6 +44,9 @@ func ToValue(r io.Reader) (value goutil.Any, err error) {
 	case TypeBytes:
 		value, err = toBytes(r)
 
+	case TypeObject:
+		value, err = toObject(r)
+
 	default:
 		err = fmt.Errorf("Transfer Error: Can not identify type %d", t[0])
 	}

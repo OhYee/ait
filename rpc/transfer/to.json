@@ -19,7 +19,8 @@
                     "int32",
                     "int64",
                     "string",
-                    "bytes"
+                    "bytes",
+                    "object"
                 ]
             ]
         }

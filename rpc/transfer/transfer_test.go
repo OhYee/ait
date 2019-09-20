@@ -15,6 +15,43 @@ type testCase struct {
 	wantErr bool
 }
 
+type testObject struct {
+	name string
+	age  int
+}
+
+func newTestObjectFromBytes(b []byte) (o testObject, err error) {
+	buf := bytes.NewBuffer(b)
+
+	o.name, err = ToString(buf)
+	if err != nil {
+		return
+	}
+
+	var age int32
+	age, err = ToInt32(buf)
+	o.age = int(age)
+	if err != nil {
+		return
+	}
+
+	return
+}
+
+func (o testObject) ToBytes() (b []byte) {
+	var temp []byte
+	buf := bytes.NewBuffer([]byte{})
+
+	temp = FromString(o.name)
+	buf.Write(temp)
+
+	temp = FromInt32(int32(o.age))
+	buf.Write(temp)
+
+	b = buf.Bytes()
+	return
+}
+
 var testcases = []testCase{
 	{
 		name:    "uint8",
@@ -122,7 +159,7 @@ var testcases = []testCase{
 		wantErr: false,
 	},
 	{
-		name:    "bytes",
+		name:    "bytes error",
 		b:       []byte{TypeBytes, 0x00, 0x00, 0x00, 0x02, 0x05},
 		v:       []byte{0x05, 0x04},
 		tf:      ToBytes,
@@ -131,37 +168,44 @@ var testcases = []testCase{
 }
 
 func TestTranasferFrom(t *testing.T) {
-	t.Run("unknown type", func(t *testing.T) {
+	t.Run("From unknown type", func(t *testing.T) {
 		b, err := FromValue(testCase{})
 		if !bytes.Equal(b, []byte{}) || err == nil {
 			t.Errorf("Except %v, got %v", []byte{}, b)
 		}
 	})
 	for _, testcase := range testcases {
-		t.Run(testcase.name, func(t *testing.T) {
+		t.Run("From"+testcase.name, func(t *testing.T) {
 			b, err := FromValue(testcase.v)
 			if testcase.wantErr == false && (!bytes.Equal(b, testcase.b) || err != nil) {
 				t.Errorf("Except %v, got %v", testcase.b, b)
 			}
 		})
 	}
+	t.Run("FromObject", func(t *testing.T) {
+		ans := []byte{TypeObject, 0, 0, 0, 15, TypeString, 0, 0, 0, 5, 'S', 't', 'e', 'v', 'e', TypeInt32, 0, 0, 0, 21}
+		b, err := FromValue(testObject{"Steve", 21})
+		if !bytes.Equal(b, ans) || err != nil {
+			t.Errorf("Except %v nil, got %v %v", ans, b, err)
+		}
+	})
 }
 
 func TestTranasferTo(t *testing.T) {
-	t.Run("unknown type", func(t *testing.T) {
+	t.Run("To unknown type", func(t *testing.T) {
 		_, err := ToValue(bytes.NewBuffer([]byte{0xff}))
 		if err == nil {
 			t.Errorf("Except err, got nil")
 		}
 	})
 	for _, testcase := range testcases {
-		t.Run(testcase.name, func(t *testing.T) {
+		t.Run("To"+testcase.name, func(t *testing.T) {
 			value, err := ToValue(bytes.NewBuffer(testcase.b))
 			if testcase.wantErr == false && (!goutil.Equal(value, testcase.v) || err != nil) {
 				t.Errorf("Except %v, got %v", testcase.v, value)
 			}
 		})
-		t.Run("To"+testcase.name, func(t *testing.T) {
+		t.Run("to"+testcase.name, func(t *testing.T) {
 			output := reflect.ValueOf(testcase.tf).Call([]reflect.Value{reflect.ValueOf(bytes.NewBuffer(testcase.b))})
 			value := output[0].Interface()
 			err := output[1].Interface()
@@ -177,4 +221,47 @@ func TestTranasferTo(t *testing.T) {
 			}
 		})
 	}
+	objBytes := []byte{TypeObject, 0, 0, 0, 15, TypeString, 0, 0, 0, 5, 'S', 't', 'e', 'v', 'e', TypeInt32, 0, 0, 0, 21}
+	t.Run("ToObject", func(t *testing.T) {
+		value, err := ToValue(bytes.NewBuffer(objBytes))
+		if err != nil {
+			t.Errorf("Got error %v", err)
+		}
+		valueBytes, ok := value.([]byte)
+		if !ok {
+			t.Errorf("Value %v is %T not []byte", value, value)
+		}
+		obj, err := newTestObjectFromBytes(valueBytes)
+		if err != nil {
+			t.Errorf("Got error %v", err)
+		}
+		if !goutil.Equal(obj, testObject{"Steve", 21}) {
+			t.Errorf("Except err, got nil")
+		}
+	})
+	t.Run("toObject", func(t *testing.T) {
+		value, err := ToObject(bytes.NewBuffer(objBytes))
+		if err != nil {
+			t.Errorf("Got error %v", err)
+		}
+		obj, err := newTestObjectFromBytes(value)
+		if err != nil {
+			t.Errorf("Got error %v", err)
+		}
+		if !goutil.Equal(obj, testObject{"Steve", 21}) {
+			t.Errorf("Except err, got nil")
+		}
+	})
+	t.Run("toObject error", func(t *testing.T) {
+		_, err := ToObject(bytes.NewBuffer([]byte{0xff}))
+		if err == nil {
+			t.Error("want error, got nil")
+		}
+	})
+	t.Run("toObject error", func(t *testing.T) {
+		_, err := ToObject(bytes.NewBuffer(objBytes[:len(objBytes)-1]))
+		if err == nil {
+			t.Error("want error, got nil")
+		}
+	})
 }

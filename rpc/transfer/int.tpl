@@ -1,6 +1,6 @@
 {{if (eq .length "1")}}
     // From{{upperFirstChar .type}} transfer from `{{.type}}` to `[]byte`
-    func From{{upperFirstChar .type}} (value {{.type}}) (b []byte, err error) {
+    func From{{upperFirstChar .type}} (value {{.type}}) (b []byte) {
         b = []byte{Type{{upperFirstChar .type}}, u{{.type}}(value)}
         return
     }
@@ -27,7 +27,7 @@
     }
 
     // FromU{{.type}} transfer from `u{{.type}}` to `[]byte`
-    func FromU{{.type}} (value u{{.type}}) (b []byte, err error) {
+    func FromU{{.type}} (value u{{.type}}) (b []byte) {
         b = []byte{TypeU{{.type}}, value}
         return
     }
@@ -54,7 +54,7 @@
     }
 {{else}}
     // From{{upperFirstChar .type}} transfer from `{{.type}}` to `[]byte`
-    func From{{upperFirstChar .type}} (value {{.type}}) (b []byte, err error) {
+    func From{{upperFirstChar .type}} (value {{.type}}) (b []byte) {
         b = make([]byte, {{.length}})
         byteOrder.PutU{{.type}}(b, u{{.type}}(value))
         b = append([]byte{Type{{upperFirstChar .type}}}, b...)
@@ -83,7 +83,7 @@
     }
 
     // FromU{{.type}} transfer from `u{{.type}}` to `[]byte`
-    func FromU{{.type}} (value u{{.type}}) (b []byte, err error) {
+    func FromU{{.type}} (value u{{.type}}) (b []byte) {
         b = make([]byte, {{.length}})
         byteOrder.PutU{{.type}}(b, value)
         b = append([]byte{TypeU{{.type}}}, b...)

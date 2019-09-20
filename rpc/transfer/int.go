@@ -9,7 +9,7 @@ import (
 )
 
 // FromInt8 transfer from `int8` to `[]byte`
-func FromInt8(value int8) (b []byte, err error) {
+func FromInt8(value int8) (b []byte) {
 	b = []byte{TypeInt8, uint8(value)}
 	return
 }
@@ -36,7 +36,7 @@ func toInt8(r io.Reader) (value int8, err error) {
 }
 
 // FromUint8 transfer from `uint8` to `[]byte`
-func FromUint8(value uint8) (b []byte, err error) {
+func FromUint8(value uint8) (b []byte) {
 	b = []byte{TypeUint8, value}
 	return
 }
@@ -63,7 +63,7 @@ func toUint8(r io.Reader) (value uint8, err error) {
 }
 
 // FromInt16 transfer from `int16` to `[]byte`
-func FromInt16(value int16) (b []byte, err error) {
+func FromInt16(value int16) (b []byte) {
 	b = make([]byte, 2)
 	byteOrder.PutUint16(b, uint16(value))
 	b = append([]byte{TypeInt16}, b...)
@@ -92,7 +92,7 @@ func toInt16(r io.Reader) (value int16, err error) {
 }
 
 // FromUint16 transfer from `uint16` to `[]byte`
-func FromUint16(value uint16) (b []byte, err error) {
+func FromUint16(value uint16) (b []byte) {
 	b = make([]byte, 2)
 	byteOrder.PutUint16(b, value)
 	b = append([]byte{TypeUint16}, b...)
@@ -122,7 +122,7 @@ func toUint16(r io.Reader) (value uint16, err error) {
 }
 
 // FromInt32 transfer from `int32` to `[]byte`
-func FromInt32(value int32) (b []byte, err error) {
+func FromInt32(value int32) (b []byte) {
 	b = make([]byte, 4)
 	byteOrder.PutUint32(b, uint32(value))
 	b = append([]byte{TypeInt32}, b...)
@@ -151,7 +151,7 @@ func toInt32(r io.Reader) (value int32, err error) {
 }
 
 // FromUint32 transfer from `uint32` to `[]byte`
-func FromUint32(value uint32) (b []byte, err error) {
+func FromUint32(value uint32) (b []byte) {
 	b = make([]byte, 4)
 	byteOrder.PutUint32(b, value)
 	b = append([]byte{TypeUint32}, b...)
@@ -181,7 +181,7 @@ func toUint32(r io.Reader) (value uint32, err error) {
 }
 
 // FromInt64 transfer from `int64` to `[]byte`
-func FromInt64(value int64) (b []byte, err error) {
+func FromInt64(value int64) (b []byte) {
 	b = make([]byte, 8)
 	byteOrder.PutUint64(b, uint64(value))
 	b = append([]byte{TypeInt64}, b...)
@@ -210,7 +210,7 @@ func toInt64(r io.Reader) (value int64, err error) {
 }
 
 // FromUint64 transfer from `uint64` to `[]byte`
-func FromUint64(value uint64) (b []byte, err error) {
+func FromUint64(value uint64) (b []byte) {
 	b = make([]byte, 8)
 	byteOrder.PutUint64(b, value)
 	b = append([]byte{TypeUint64}, b...)
