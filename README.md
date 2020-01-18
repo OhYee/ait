@@ -1,3 +1,3 @@
 # Ait
 
-![workflow state](https://github.com/OhYee/ait/workflows/transfer_test/badge.svg)
+![workflow state](https://github.com/OhYee/ait/workflows/master/badge.svg)

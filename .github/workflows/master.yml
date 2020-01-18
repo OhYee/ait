@@ -1,13 +1,13 @@
-name: transfer_test
+name: master
 on: [push]
 jobs:
 
   build:
-    name: transfer_test
+    name: master
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
     - uses: actions/setup-go@v1
       with:
         go-version: 1.13
-    - run:   go test ./rpc/transfer -v 
+    - run:   go test ./... -v 
