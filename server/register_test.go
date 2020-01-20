@@ -6,6 +6,8 @@ import (
 	"testing"
 )
 
+var register = MakeRegister("test_server")
+
 func sum(a int, b int) (c int) {
 	c = a + b
 	return
