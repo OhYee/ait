@@ -6,15 +6,6 @@ import (
 	"testing"
 )
 
-// var closeServerA = make(chan bool, 1)
-// var closeServerB = make(chan bool, 1)
-
-// func serverA() {
-
-// }
-
-var register = MakeRegister("test_server")
-
 func sum(a int, b int) (c int) {
 	c = a + b
 	return
@@ -80,5 +71,5 @@ func TestRegister(t *testing.T) {
 var serverClose = make(chan bool, 1)
 
 func serverA() {
-	
+
 }
