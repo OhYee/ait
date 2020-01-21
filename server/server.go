@@ -4,11 +4,13 @@ import (
 	"github.com/OhYee/ait/message"
 	"github.com/xtaci/kcp-go"
 	"net"
+	"time"
 )
 
 // Singleton Pattern
 var (
-	closeThread = make([]chan bool, 0)
+	closeThread  = make([]chan bool, 0)
+	connDeadTime = 5000
 )
 
 // Start server, blocking the process after returned
@@ -40,6 +42,7 @@ func thread(threadID int, listener net.Listener) {
 				Err(err)
 				continue
 			}
+			conn.SetDeadline(time.Now().Add(time.Second * time.Duration(connDeadTime)))
 			if handle(threadID, conn) != nil {
 				Err(err)
 				continue
