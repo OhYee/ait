@@ -14,6 +14,7 @@ type Response struct {
 // NewResponse initial a Response
 func NewResponse(success bool, args []byte) *Response {
 	return &Response{
+		Success:   success,
 		Arguments: args,
 	}
 }
