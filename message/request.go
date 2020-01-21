@@ -7,34 +7,34 @@ import (
 
 // Request message body
 type Request struct {
-	ServerName      string
-	APIName string
-	Arguments []byte
+	ServerName string
+	APIName    string
+	Arguments  []byte
 }
 
 // NewRequest initial a Request
-func NewRequest(serverName string,apiName string, args []byte) *Request {
+func NewRequest(serverName string, apiName string, args []byte) *Request {
 	return &Request{
-		ServerName:      serverName,
-		APIName : apiName,
-		Arguments: args,
+		ServerName: serverName,
+		APIName:    apiName,
+		Arguments:  args,
 	}
 }
 
 // NewRequestFromBytes initial a Request from []byte
 func NewRequestFromBytes(r io.Reader) (req *Request, err error) {
-	var serverName,apiName string
+	var serverName, apiName string
 	var args []byte
 	if serverName, err = bytes.ReadStringWithLength32(r); err != nil {
 		return
 	}
-		if apiName, err = bytes.ReadStringWithLength32(r); err != nil {
+	if apiName, err = bytes.ReadStringWithLength32(r); err != nil {
 		return
 	}
 	if args, err = bytes.ReadBytesWithLength32(r); err != nil {
 		return
 	}
-	req = NewRequest(serverName, apiName,args)
+	req = NewRequest(serverName, apiName, args)
 	return
 }
 
