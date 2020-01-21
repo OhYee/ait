@@ -26,13 +26,11 @@ func NewMessage(t MessageType, body bytes.Serializable) *Message {
 // NewMessageFromBytes initial a Message from []byte
 func NewMessageFromBytes(r io.Reader) (msg *Message, err error) {
 	var t uint8
-	var body bytes.Serializable
-
 	if t, err = bytes.ReadUint8(r); err != nil {
 		return
 	}
 
-	switch MessageType(t) {
+	switch  MessageType(t) {
 	case MessageTypeRequest:
 		var req *Request
 		if req, err = NewRequestFromBytes(r); err != nil {
@@ -58,11 +56,7 @@ func NewMessageFromBytes(r io.Reader) (msg *Message, err error) {
 		}
 		msg = close.ToMessage()
 	default:
-		err = errors.New("Unknow type message: %v", msg.Type)
-	}
-
-	if err == nil {
-		msg = NewMessage(MessageType(t), body)
+		err = errors.New("Unknow type message: %v", t)
 	}
 
 	return
@@ -72,7 +66,7 @@ func NewMessageFromBytes(r io.Reader) (msg *Message, err error) {
 func (msg *Message) ToBytes() []byte {
 	buf := bytes.NewBuffer()
 	buf.Write(bytes.FromUint8(uint8(msg.Type)))
-	buf.Write(bytes.FromBytesWithLength32(msg.Body.ToBytes()))
+	buf.Write(msg.Body.ToBytes())
 	return buf.Bytes()
 }
 
