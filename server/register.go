@@ -3,11 +3,13 @@ package server
 import (
 	"encoding/json"
 	"github.com/OhYee/ait/message"
+	"github.com/OhYee/rainbow/errors"
 	"reflect"
 )
 
 func getObject(data interface{}) (valueSlice []reflect.Value) {
-	dataValue := reflect.ValueOf(data)
+	Debug("%T %+v", data, data)
+	dataValue := reflect.ValueOf(data).Elem()
 	inputNum := dataValue.NumField()
 	valueSlice = make([]reflect.Value, inputNum)
 	for i := 0; i < inputNum; i++ {
@@ -26,36 +28,43 @@ func setObject(valueSlice []reflect.Value, data interface{}) {
 }
 
 // RegisterType register type
-type RegisterType func(apiName string, f interface{}, req interface{}, rep interface{}) (err error)
+type RegisterType func(apiName string, f interface{}, reqType interface{}, repType interface{}) (caller CallerType)
+
+// CallerType api caller function
+type CallerType func(req interface{}, rep interface{}) (err error)
 
 // MakeRegister make a register to register function as api
 func MakeRegister(serverName string) (register RegisterType) {
-	return func(apiName string, f interface{}, req interface{}, rep interface{}) (err error) {
-		var reqBytes []byte
-		if reqBytes, err = json.Marshal(req); err != nil {
-			return
-		}
-		RegisterAPI(apiName, f)
+	register = func(apiName string, f interface{}, reqType interface{}, repType interface{}) (caller CallerType) {
+		RegisterAPI(apiName, f, reqType, repType)
+		caller = func(req interface{}, rep interface{}) (err error) {
+			var reqBytes []byte
+			if reqBytes, err = json.Marshal(req); err != nil {
+				return
+			}
 
-		reqMessage := msg.NewRequest(serverName, apiName, reqBytes)
+			reqMessage := msg.NewRequest(serverName, apiName, reqBytes).ToMessage()
 
-		var info Info
-		if info, err = GetServerInfo(serverName); err != nil {
-			return
-		}
+			var info Info
+			if info, err = GetServerInfo(serverName); err != nil {
+				return
+			}
 
-		var repBytes []byte
-		var repErr error
-		if repBytes, repErr, err = Send(info.addr, reqMessage.ToBytes()); err != nil {
+			var repBytes []byte
+			var repErr error
+			if repBytes, repErr, err = Send(info.addr, reqMessage.ToBytes()); err != nil {
+				return
+			}
+			if repErr == nil {
+				err = json.Unmarshal(repBytes, rep)
+			} else {
+				err = repErr
+			}
 			return
-		}
-		if repErr == nil {
-			err = json.Unmarshal(repBytes, rep)
-		} else {
-			err = repErr
 		}
 		return
 	}
+	return
 }
 
 // CallFunction using request object and set reponse object
@@ -66,19 +75,32 @@ func CallFunction(f interface{}, req interface{}, rep interface{}) {
 }
 
 // CallAPI using []byte-request, and return []byte-request with error
-func CallAPI(f interface{}, req []byte) (rep []byte, err error) {
-	fValue := reflect.ValueOf(f)
-	fType := reflect.TypeOf(f)
+func CallAPI(api API, req []byte) (rep []byte, err error) {
+	Debug("Call API %+v with request %s", api, req)
 
-	request := reflect.New(fType.In(0)).Interface()
-	if err = json.Unmarshal(req, &req); err != nil {
+	request := reflect.New(reflect.TypeOf(api.request)).Interface()
+
+	if err = json.Unmarshal(req, &request); err != nil {
+		err = errors.NewErr(err)
 		return
 	}
+	Debug("%+v %T %s", request, request, reflect.ValueOf(request))
 
 	in := getObject(request)
-	out := fValue.Call(in)
+	out := reflect.ValueOf(api.function).Call(in)
 
-	response := out[0].Interface()
+	Debug("%+v", out[0])
+
+	response := reflect.New(reflect.TypeOf(api.response)).Interface()
+	setObject(out, response)
+
+	Debug("%+v", response)
+
 	rep, err = json.Marshal(response)
+	Debug("%+v %+v", rep, err)
+	if err != nil {
+		err = errors.NewErr(err)
+	}
+
 	return
 }

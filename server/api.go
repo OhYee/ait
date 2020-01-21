@@ -8,20 +8,27 @@ import (
 // Singleton Pattern
 var (
 	mapMutex = new(sync.Mutex)
-	funcMap  = make(map[string]interface{})
-	apiMap   = make(map[string]interface{})
+	apiMap   = make(map[string]API)
 )
 
+// API for micro-server
+type API struct {
+	apiName  string
+	function interface{}
+	request  interface{}
+	response interface{}
+}
+
 // RegisterAPI register api as server api
-func RegisterAPI(apiName string, f interface{}) {
+func RegisterAPI(apiName string, f interface{}, reqType interface{}, repType interface{}) {
 	mapMutex.Lock()
 	defer mapMutex.Unlock()
 
-	apiMap[apiName] = f
+	apiMap[apiName] = API{apiName, f, reqType, repType}
 }
 
 // GetAPI get api (is not exist, return nil)
-func GetAPI(apiName string) (api interface{}, err error) {
+func GetAPI(apiName string) (api API, err error) {
 	mapMutex.Lock()
 	defer mapMutex.Unlock()
 	api, exist := apiMap[apiName]

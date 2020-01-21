@@ -14,6 +14,8 @@ func messageHandle(conn net.Conn) (repBytes []byte, repErr error, err error) {
 		if err != nil {
 			break
 		}
+		Log("Message: %+v %+v", message, message.Body)
+
 		err = message.Handle(
 			func(req *msg.Request) (err error) {
 				return requestHandle(req, conn)
@@ -40,14 +42,20 @@ func requestHandle(req *msg.Request, conn net.Conn) (err error) {
 	if err != nil {
 		return
 	}
+	Log("Request handle: %+v", req)
+
 	rep, err := CallAPI(api, req.Arguments)
+	Debug("Call API %s with request %s, return %+v %+v", api, req, rep, err)
+
 	var response *msg.Message
 	if err != nil {
 		response = msg.NewResponse(false, bytes.FromStringWithLength32(err.Error())).ToMessage()
 	} else {
 		response = msg.NewResponse(true, rep).ToMessage()
 	}
+	Debug("Write %v", response.ToBytes())
 	conn.Write(response.ToBytes())
+	conn.Write(msg.NewClose().ToMessage().ToBytes())
 	return
 }
 
