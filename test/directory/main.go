@@ -2,8 +2,7 @@ package main
 
 import (
 	"github.com/OhYee/ait/server"
-	"github.com/OhYee/ait/server/dir"
-	_ "github.com/OhYee/ait/test/B/api"
+	_ "github.com/OhYee/ait/server/dir"
 	"github.com/OhYee/rainbow/color"
 	"github.com/OhYee/rainbow/log"
 )
@@ -24,7 +23,7 @@ func main() {
 	server.SetErrCallback(func(err error) {
 		errLogger.Println(err)
 	})
-	server.SetServerInfo(server.NewInfo("directory", "127.0.0.1:50000", 0, 0))
-	server.Start("B", "127.0.0.1:50001", 10)
-	dir.StartHeartBeatThread()
+	server.Start("directory","127.0.0.1:50000", 10)
+	for {
+	}
 }

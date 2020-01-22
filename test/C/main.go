@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/OhYee/ait/server"
+	"github.com/OhYee/ait/server/dir"
 	"github.com/OhYee/ait/test/B/api"
 	"github.com/OhYee/rainbow/color"
 	"github.com/OhYee/rainbow/log"
+	"time"
 )
 
 var (
@@ -25,7 +27,11 @@ func main() {
 		errLogger.Println(err)
 	})
 
-	server.SetServerInfo(server.NewInfo("B", "127.0.0.1:50001", 0, 0))
+	server.SetServerInfo(server.NewInfo("directory", "127.0.0.1:50000", 0, 0))
+	server.Start("C", "127.0.0.1:50002", 10)
+	go dir.StartHeartBeatThread()
+	<-time.After(time.Second * 5)
+	server.Debug("5+6=?")
 	rep, err := api.Sum(api.SumRequest{
 		A: 5,
 		B: 6,
