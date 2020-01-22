@@ -31,5 +31,21 @@ func SetServerInfo(info Info) {
 	serverMapMutex.Lock()
 	defer serverMapMutex.Unlock()
 
-	serverMap[info.name] = info
+	Debug("SetServerInfo %+v", info)
+	serverMap[info.Name] = info
+}
+
+// GetServerInfoList get all information of servers
+func GetServerInfoList() (serverList []Info) {
+	serverMapMutex.Lock()
+	defer serverMapMutex.Unlock()
+
+	serverList = make([]Info, len(serverMap))
+	i := 0
+	for _, info := range serverMap {
+		serverList[i] = info
+		i++
+	}
+
+	return
 }
