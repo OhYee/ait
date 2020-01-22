@@ -47,7 +47,7 @@ func StartHeartBeatThread() {
 			for _, serverInfo := range req.ServerList {
 				server.SetServerInfo(serverInfo)
 			}
-		}``
+		}
 		<-time.After(time.Second * 10)
 	}
 }
