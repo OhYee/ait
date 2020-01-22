@@ -18,6 +18,9 @@ func messageHandle(conn net.Conn) (repBytes []byte, repErr error, err error) {
 
 		err = message.Handle(
 			func(req *msg.Request) (err error) {
+				// TODO: 应该将每个线程的连接构造成一个连接对象，用以存储上下文以及控制状态
+				// 这里不应该使用connClosed来关闭连接
+				connClosed = true
 				return requestHandle(req, conn)
 			},
 			func(rep *msg.Response) (err error) {
