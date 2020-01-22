@@ -34,7 +34,8 @@ type RegisterType func(apiName string, f interface{}, reqType interface{}, repTy
 type CallerType func(req interface{}, rep interface{}) (err error)
 
 // MakeRegister make a register to register function as api
-func MakeRegister(serverName string) (register RegisterType) {
+func MakeRegister(_serverName string) (register RegisterType) {
+	serverName = _serverName
 	register = func(apiName string, f interface{}, reqType interface{}, repType interface{}) (caller CallerType) {
 		RegisterAPI(apiName, f, reqType, repType)
 		caller = func(req interface{}, rep interface{}) (err error) {
@@ -43,16 +44,16 @@ func MakeRegister(serverName string) (register RegisterType) {
 				return
 			}
 
-			reqMessage := msg.NewRequest(serverName, apiName, reqBytes).ToMessage()
+			reqMessage := msg.NewRequest(_serverName, apiName, reqBytes).ToMessage()
 
 			var info Info
-			if info, err = GetServerInfo(serverName); err != nil {
+			if info, err = GetServerInfo(_serverName); err != nil {
 				return
 			}
 
 			var repBytes []byte
 			var repErr error
-			if repBytes, repErr, err = Send(info.addr, reqMessage.ToBytes()); err != nil {
+			if repBytes, repErr, err = Send(info.Addr, reqMessage.ToBytes()); err != nil {
 				return
 			}
 			if repErr == nil {

@@ -11,10 +11,14 @@ import (
 var (
 	closeThread  = make([]chan bool, 0)
 	connDeadTime = 5000
+	serverAddr   = ""
+	serverName   = ""
 )
 
 // Start server, blocking the process after returned
-func Start(addr string, threadNumber int) (err error) {
+func Start(name string, addr string, threadNumber int) (err error) {
+	serverAddr = addr
+	serverName = name
 	listener, err := kcp.Listen(addr)
 	if err != nil {
 		return
@@ -72,4 +76,11 @@ func handle(threadID int, conn net.Conn) (err error) {
 
 	_, _, err = messageHandle(conn)
 	return
+}
+
+func GetServerAddr() string {
+	return serverAddr
+}
+func GetServerName() string {
+	return serverName
 }
