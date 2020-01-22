@@ -7,19 +7,19 @@ import (
 
 // Info information of server
 type Info struct {
-	name     string
-	addr     string
-	sendTime int64
-	recvTime int64
+	Name     string
+	Addr     string
+	SendTime int64
+	RecvTime int64
 }
 
 // NewInfo initial a Info object
 func NewInfo(name string, addr string, sendTime int64, recvTime int64) Info {
 	return Info{
-		name:     name,
-		addr:     addr,
-		sendTime: sendTime,
-		recvTime: recvTime,
+		Name:     name,
+		Addr:     addr,
+		SendTime: sendTime,
+		RecvTime: recvTime,
 	}
 }
 
@@ -48,9 +48,9 @@ func NewInfoFromBytes(r io.Reader) (info Info, err error) {
 // ToBytes transfer Info to []byte
 func (info Info) ToBytes() []byte {
 	buf := bytes.NewBuffer()
-	buf.Write(bytes.FromStringWithLength32(info.name))
-	buf.Write(bytes.FromStringWithLength32(info.addr))
-	buf.Write(bytes.FromInt64(info.sendTime))
-	buf.Write(bytes.FromInt64(info.recvTime))
+	buf.Write(bytes.FromStringWithLength32(info.Name))
+	buf.Write(bytes.FromStringWithLength32(info.Addr))
+	buf.Write(bytes.FromInt64(info.SendTime))
+	buf.Write(bytes.FromInt64(info.RecvTime))
 	return buf.Bytes()
 }
